@@ -1,6 +1,6 @@
-# Occam Server
+# Occam File System
 
-[Occam](https://github.com/djalbat/occam)'s server functionality.
+[Occam](https://github.com/djalbat/occam)'s file system functionality.
 
 ### Contents
 

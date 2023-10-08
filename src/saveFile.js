@@ -1,6 +1,6 @@
 "use strict";
 
-import { File } from "occam-file-system";
+import { File } from "occam-entities";
 
 import { saveFile as saveFileEx } from "./utilities/fileSystem"
 
