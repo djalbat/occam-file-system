@@ -4,8 +4,12 @@ import { pathUtilities, fileSystemUtilities } from "necessary";
 
 import { asynchronousForEach } from "./utilities/pathMaps";
 
+
 const { concatenatePaths } = pathUtilities,
-      { checkEntryExists, isDirectoryEmpty, removeEntry: removeEntryEx } = fileSystemUtilities;
+      { isDirectoryEmpty,
+        checkEntryExists,
+        removeEntry: removeFileEx,
+        removeEntry: removeDirectoryEx } = fileSystemUtilities;
 
 export default function removeProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -20,6 +24,12 @@ export default function removeProjectEntries(projectsDirectoryPath, json, callba
 }
 
 export function removeEntryOperation(sourceEntryPath, targetEntryPath, entryDirectory, projectsDirectoryPath, callback) {
+
+
+
+
+
+
   const absoluteSourceEntryPath = concatenatePaths(projectsDirectoryPath, sourceEntryPath),
         sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
 
@@ -36,19 +46,25 @@ export function removeEntryOperation(sourceEntryPath, targetEntryPath, entryDire
       removeFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback);
 }
 
-export function removeEntry(entryPath, callback) {
+export function removeDirectory(directoryPath, callback) {
   let error = null;
 
-  const entryExists = checkEntryExists(entryPath);
+  try {
+    removeDirectoryEx(directoryPath);
+  } catch (nativeError) {
+    error = nativeError;  ///
+  }
 
-  if (!entryExists) {
-    error = `The '${entryPath}' entry does not exist.`;
-  } else {
-    try {
-      removeEntryEx(entryPath);
-    } catch (nativeError) {
-      error = nativeError;  ///
-    }
+  callback(error);
+}
+
+export function removeFile(filePath, callback) {
+  let error = null;
+
+  try {
+    removeFileEx(filePath);
+  } catch (nativeError) {
+    error = nativeError;  ///
   }
 
   callback(error);
@@ -74,10 +90,23 @@ function removeEntries(pathMaps, projectsDirectoryPath, callback) {
 
 function removeFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) {
   const sourceFilePath = sourceEntryPath, ///
+
         absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath),
+
+
+
+
+
+
+
+
+
+
+
         entryPath = absoluteSourceFilePath; ///
 
-  removeEntry(entryPath, (error) => {
+
+  removeFile(entryPath, (error) => {
     if (error) {
       targetEntryPath = sourceEntryPath;  ///
     }
@@ -88,6 +117,7 @@ function removeFileOperation(sourceEntryPath, targetEntryPath, projectsDirectory
 
 function removeDirectoryOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) {
   const sourceDirectoryPath = sourceEntryPath,  ///
+
         absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath),
         sourceDirectoryEmpty = isDirectoryEmpty(absoluteSourceDirectoryPath);
 
@@ -99,9 +129,27 @@ function removeDirectoryOperation(sourceEntryPath, targetEntryPath, projectsDire
     return;
   }
 
-  const entryPath = absoluteSourceDirectoryPath;  ///
 
-  removeEntry(entryPath, (error) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const directoryPath = absoluteSourceDirectoryPath;  ///
+
+  removeDirectory(directoryPath, (error) => {
     if (error) {
       targetEntryPath = sourceEntryPath;  ///
     }

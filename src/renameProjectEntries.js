@@ -4,10 +4,12 @@ import { pathUtilities, fileSystemUtilities } from "necessary";
 
 import { asynchronousForEach } from "./utilities/pathMaps";
 
-import { moveFile as renameFile, moveDirectory as renameDirectory } from "./moveProjectEntries";
 
 const { concatenatePaths } = pathUtilities,
-      { checkEntryExists, isDirectoryEmpty } = fileSystemUtilities;
+      { isDirectoryEmpty,
+        checkEntryExists,
+        renameFile: renameFileEx,
+        renameDirectory: renameDirectoryEx } = fileSystemUtilities;
 
 export default function renameProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -22,6 +24,12 @@ export default function renameProjectEntries(projectsDirectoryPath, json, callba
 }
 
 export function renameEntryOperation(sourceEntryPath, targetEntryPath, entryDirectory, projectsDirectoryPath, callback) {
+
+
+
+
+
+
   const absoluteSourceEntryPath = concatenatePaths(projectsDirectoryPath, sourceEntryPath),
         sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
 
@@ -36,6 +44,30 @@ export function renameEntryOperation(sourceEntryPath, targetEntryPath, entryDire
   entryDirectory ?
     renameDirectoryOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) :
       renameFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback);
+}
+
+export function renameDirectory(oldDirectoryPath, newDirectoryPath, callback) {
+  let error = null;
+
+  try {
+    renameDirectoryEx(oldDirectoryPath);
+  } catch (nativeError) {
+    error = nativeError;  ///
+  }
+
+  callback(error);
+}
+
+export function renameFile(oldFilePath, newFilePath, callback) {
+  let error = null;
+
+  try {
+    renameFileEx(oldFilePath, newFilePath);
+  } catch (nativeError) {
+    error = nativeError;  ///
+  }
+
+  callback(error);
 }
 
 function renameEntries(pathMaps, projectsDirectoryPath, callback) {

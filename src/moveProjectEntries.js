@@ -3,16 +3,13 @@
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
 import { asynchronousForEach } from "./utilities/pathMaps";
-import { removeEntryOperation } from "./removeProjectEntries";
-import { removeEntry as removeDirectory } from "./removeProjectEntries";
+import { removeDirectory, removeEntryOperation } from "./removeProjectEntries";
 
-const { concatenatePaths, pathWithoutBottommostNameFromPath } = pathUtilities,
+const { concatenatePaths } = pathUtilities,
       { isDirectoryEmpty,
         checkEntryExists,
-        renameFile: renameFileEx,
-        renameDirectory: renameDirectoryEx,
-        checkEntryExists: checkFileExists,
-        checkEntryExists: checkDirectoryExists } = fileSystemUtilities;
+        moveFile: moveFileEx,
+        moveDirectory: moveDirectoryEx } = fileSystemUtilities;
 
 export default function moveProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -52,18 +49,10 @@ export function moveEntryOperation(sourceEntryPath, targetEntryPath, entryDirect
 export function moveDirectory(oldDirectoryPath, newDirectoryPath, callback) {
   let error = null;
 
-  const newDirectoryPathWithoutBottommostName = pathWithoutBottommostNameFromPath(newDirectoryPath),
-        newParentDirectoryPath = newDirectoryPathWithoutBottommostName, ///
-        newParentDirectoryExists = checkDirectoryExists(newParentDirectoryPath);
-
-  if (!newParentDirectoryExists) {
-    error = `The new '${newDirectoryPath}' directory's parent directory does not exist.`;
-  } else {
-    try {
-      renameDirectoryEx(oldDirectoryPath);
-    } catch (nativeError) {
-      error = nativeError;  ///
-    }
+  try {
+    moveDirectoryEx(oldDirectoryPath);
+  } catch (nativeError) {
+    error = nativeError;  ///
   }
 
   callback(error);
@@ -72,18 +61,10 @@ export function moveDirectory(oldDirectoryPath, newDirectoryPath, callback) {
 export function moveFile(oldFilePath, newFilePath, callback) {
   let error = null;
 
-  const newFilePathWithoutBottommostName = pathWithoutBottommostNameFromPath(newFilePath),
-        newParentDirectoryPath = newFilePathWithoutBottommostName, ///
-        newParentDirectoryExists = checkFileExists(newParentDirectoryPath);
-
-  if (!newParentDirectoryExists) {
-    error = `The new '${newFilePath}' file's parent directory does not exist.`;
-  } else {
-    try {
-      renameFileEx(oldFilePath, newFilePath);
-    } catch (nativeError) {
-      error = nativeError;  ///
-    }
+  try {
+    moveFileEx(oldFilePath, newFilePath);
+  } catch (nativeError) {
+    error = nativeError;  ///
   }
 
   callback(error);
@@ -127,7 +108,7 @@ function moveFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPa
 
   moveFile(oldFilePath, newFilePath, (error) => {
     if (error) {
-      targetEntryPath = null;
+      targetEntryPath = sourceEntryPath;  ///
     }
 
     callback(sourceEntryPath, targetEntryPath);

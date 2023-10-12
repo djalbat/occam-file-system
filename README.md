@@ -35,9 +35,17 @@ The exported functions are:
 * `loadFile()`
 * `saveFile()`
 * `loadFiles()`
+* `loadProject()`
+* `loadRelease()`
 * `loadProjects()`
+* `loadReleases()`
+* `removeRelease()`
 * `moveProjectEntries()`
 * `removeProjectEntries()`
+* `renameProjectEntries()`
+* `createProjectEntries()`
+
+Soem utility functions are also exported. See the source for details.
 
 Typical usage is as follows:
 
