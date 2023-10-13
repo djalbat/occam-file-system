@@ -43,7 +43,7 @@ export function moveProjectEntry(projectsDirectoryPath, pathMap) {
       moveProjectFile(projectsDirectoryPath, pathMap);
 }
 
-export function moveProjectFile(projectsDirectoryPath, pathMap) {
+function moveProjectFile(projectsDirectoryPath, pathMap) {
   const { sourceEntryPath, targetEntryPath } = pathMap,
         sourceFilePath = sourceEntryPath, ///
         targetFilePath = targetEntryPath, ///
@@ -64,7 +64,7 @@ export function moveProjectFile(projectsDirectoryPath, pathMap) {
   }
 }
 
-export function moveProjectDirectory(projectsDirectoryPath, pathMap) {
+function moveProjectDirectory(projectsDirectoryPath, pathMap) {
   const { sourceEntryPath, targetEntryPath } = pathMap,
         sourceDirectoryPath = sourceEntryPath, ///
         targetDirectoryPath = targetEntryPath, ///

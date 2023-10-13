@@ -33,7 +33,7 @@ export function removeProjectEntry(projectsDirectoryPath, pathMap) {
       removeProjectFile(projectsDirectoryPath, pathMap);
 }
 
-export function removeProjectFile(projectsDirectoryPath, pathMap) {
+function removeProjectFile(projectsDirectoryPath, pathMap) {
   const { sourceEntryPath } = pathMap,
         sourceFilePath = sourceEntryPath, ///
         absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath);
@@ -51,7 +51,7 @@ export function removeProjectFile(projectsDirectoryPath, pathMap) {
   }
 }
 
-export function removeProjectDirectory(projectsDirectoryPath, pathMap) {
+function removeProjectDirectory(projectsDirectoryPath, pathMap) {
   const { sourceEntryPath } = pathMap,
         sourceDirectoryPath = sourceEntryPath, ///
         absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath);

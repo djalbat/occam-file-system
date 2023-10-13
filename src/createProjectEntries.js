@@ -33,7 +33,7 @@ export function createProjectEntry(projectsDirectoryPath, pathMap) {
       createProjectFile(projectsDirectoryPath, pathMap);
 }
 
-export function createProjectFile(projectsDirectoryPath, pathMap) {
+function createProjectFile(projectsDirectoryPath, pathMap) {
   const { sourceEntryPath } = pathMap,
         sourceFilePath = sourceEntryPath, ///
         absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath);
@@ -51,7 +51,7 @@ export function createProjectFile(projectsDirectoryPath, pathMap) {
   }
 }
 
-export function createProjectDirectory(projectsDirectoryPath, pathMap) {
+function createProjectDirectory(projectsDirectoryPath, pathMap) {
   const { sourceEntryPath } = pathMap,
         sourceDirectoryPath = sourceEntryPath, ///
         absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath);

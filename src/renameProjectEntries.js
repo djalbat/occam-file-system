@@ -43,7 +43,7 @@ export function renameProjectEntry(projectsDirectoryPath, pathMap) {
       renameProjectFile(projectsDirectoryPath, pathMap);
 }
 
-export function renameProjectFile(projectsDirectoryPath, pathMap) {
+function renameProjectFile(projectsDirectoryPath, pathMap) {
   const { sourceEntryPath, targetEntryPath } = pathMap,
         sourceFilePath = sourceEntryPath, ///
         targetFilePath = targetEntryPath, ///
@@ -64,7 +64,7 @@ export function renameProjectFile(projectsDirectoryPath, pathMap) {
   }
 }
 
-export function renameProjectDirectory(projectsDirectoryPath, pathMap) {
+function renameProjectDirectory(projectsDirectoryPath, pathMap) {
   const { sourceEntryPath, targetEntryPath } = pathMap,
         sourceDirectoryPath = sourceEntryPath, ///
         targetDirectoryPath = targetEntryPath, ///
