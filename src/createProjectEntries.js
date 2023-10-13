@@ -48,12 +48,12 @@ export function createProjectEntry(projectsDirectoryPath, pathMap) {
 }
 
 function createProjectFile(projectsDirectoryPath, pathMap) {
-  const { sourceEntryPath } = pathMap,
-        sourceFilePath = sourceEntryPath, ///
-        absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath);
+  const { targetEntryPath } = pathMap,
+        targetFilePath = targetEntryPath, ///
+        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath);
 
   try {
-    const filePath = absoluteSourceFilePath;  ///
+    const filePath = absoluteTargetFilePath;  ///
 
     createFile(filePath);
   } catch (error) {
@@ -66,12 +66,12 @@ function createProjectFile(projectsDirectoryPath, pathMap) {
 }
 
 function createProjectDirectory(projectsDirectoryPath, pathMap) {
-  const { sourceEntryPath } = pathMap,
-        sourceDirectoryPath = sourceEntryPath, ///
-        absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath);
+  const { targetEntryPath } = pathMap,
+        targetDirectoryPath = targetEntryPath, ///
+        absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath);
 
   try {
-    const directoryPath = absoluteSourceDirectoryPath;  ///
+    const directoryPath = absoluteTargetDirectoryPath;  ///
 
     createDirectory(directoryPath);
   } catch (error) {
