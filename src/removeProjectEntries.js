@@ -9,7 +9,7 @@ export default function removeProjectEntries(projectsDirectoryPath, json, callba
   const { pathMaps } = json;
 
   pathMaps.forEach((pathMap) => {
-    removeProjectEntry(pathMap);
+    removeProjectEntry(projectsDirectoryPath, pathMap);
   });
 
   json = {

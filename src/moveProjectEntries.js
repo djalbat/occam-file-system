@@ -11,7 +11,7 @@ export default function moveProjectEntries(projectsDirectoryPath, json, callback
   const { pathMaps } = json;
 
   pathMaps.forEach((pathMap) => {
-    moveProjectEntry(pathMap);
+    moveProjectEntry(projectsDirectoryPath, pathMap);
   });
 
   json = {

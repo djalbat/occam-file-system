@@ -9,7 +9,7 @@ export default function createProjectEntries(projectsDirectoryPath, json, callba
   const { pathMaps } = json;
 
   pathMaps.forEach((pathMap) => {
-    createProjectEntry(pathMap);
+    createProjectEntry(projectsDirectoryPath, pathMap);
   });
 
   json = {

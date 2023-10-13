@@ -11,7 +11,7 @@ export default function renameProjectEntries(projectsDirectoryPath, json, callba
   const { pathMaps } = json;
 
   pathMaps.forEach((pathMap) => {
-    renameProjectEntry(pathMap);
+    renameProjectEntry(projectsDirectoryPath, pathMap);
   });
 
   json = {
