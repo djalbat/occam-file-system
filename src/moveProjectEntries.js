@@ -2,158 +2,85 @@
 
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
-import { asynchronousForEach } from "./utilities/pathMaps";
-import { removeDirectory, removeEntryOperation } from "./removeProjectEntries";
+import { removeProjectEntry } from "./removeProjectEntries";
 
 const { concatenatePaths } = pathUtilities,
-      { isDirectoryEmpty,
-        checkEntryExists,
-        moveFile: moveFileEx,
-        moveDirectory: moveDirectoryEx } = fileSystemUtilities;
+      { moveFile: moveFile, moveDirectory: moveDirectory } = fileSystemUtilities;
 
 export default function moveProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
 
-  moveEntries(pathMaps, projectsDirectoryPath, (targetEntryPaths) => {
-    const json = {
-      targetEntryPaths
-    };
-
-    callback(json);
+  pathMaps.forEach((pathMap) => {
+    moveProjectEntry(pathMap);
   });
+
+  json = {
+    pathMaps
+  };
+
+  callback(json);
 }
 
-export function moveEntryOperation(sourceEntryPath, targetEntryPath, entryDirectory, projectsDirectoryPath, callback) {
-  if (targetEntryPath === null) {
-    removeEntryOperation(sourceEntryPath, targetEntryPath, entryDirectory, projectsDirectoryPath, callback);
+export function moveProjectEntry(projectsDirectoryPath, pathMap) {
+  const { sourcePath } = pathMap;
+
+  if (sourcePath === null) {
+    return;
+  }
+
+  const { targetPath } = pathMap;
+
+  if (targetPath === null) {
+    removeProjectEntry(projectsDirectoryPath, pathMap);
 
     return;
   }
 
-  const absoluteSourceEntryPath = concatenatePaths(projectsDirectoryPath, sourceEntryPath),
-        sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
-
-  if (!sourceEntryExists) {
-    targetEntryPath = null;
-
-    callback(sourceEntryPath, targetEntryPath);
-
-    return;
-  }
+  const { entryDirectory } = pathMap;
 
   entryDirectory ?
-    moveDirectoryOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) :
-      moveFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback);
+    moveProjectDirectory(projectsDirectoryPath, pathMap) :
+      moveProjectFile(projectsDirectoryPath, pathMap);
 }
 
-export function moveDirectory(oldDirectoryPath, newDirectoryPath, callback) {
-  let error = null;
-
-  try {
-    moveDirectoryEx(oldDirectoryPath);
-  } catch (nativeError) {
-    error = nativeError;  ///
-  }
-
-  callback(error);
-}
-
-export function moveFile(oldFilePath, newFilePath, callback) {
-  let error = null;
-
-  try {
-    moveFileEx(oldFilePath, newFilePath);
-  } catch (nativeError) {
-    error = nativeError;  ///
-  }
-
-  callback(error);
-}
-
-function moveEntries(pathMaps, projectsDirectoryPath, callback) {
-  const targetEntryPaths = [];
-
-  asynchronousForEach(
-    pathMaps,
-    (sourceEntryPath, targetEntryPath, entryDirectory, next, done, index) => {
-      moveEntryOperation(sourceEntryPath, targetEntryPath, entryDirectory, projectsDirectoryPath, (sourceEntryPath, targetEntryPath) => {
-        targetEntryPaths.push(targetEntryPath);
-
-        next();
-      });
-    },
-    () => {
-      callback(targetEntryPaths);
-    }
-  );
-}
-
-function moveFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) {
-  const sourceFilePath = sourceEntryPath, ///
+export function moveProjectFile(projectsDirectoryPath, pathMap) {
+  const { sourceEntryPath, targetEntryPath } = pathMap,
+        sourceFilePath = sourceEntryPath, ///
         targetFilePath = targetEntryPath, ///
         absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath),
-        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath),
-        targetFileExists = checkEntryExists(absoluteTargetFilePath);
+        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath);
 
-  if (targetFileExists) {
-    targetEntryPath = sourceEntryPath;  ///
+  try {
+    const oldFilePath = absoluteSourceFilePath, ///
+          newFilePath = absoluteTargetFilePath; ///
 
-    callback(sourceEntryPath, targetEntryPath);
+    moveFile(oldFilePath, newFilePath);
+  } catch (error) {
+    const sourceEntryPath = null;
 
-    return;
+    Object.assign(pathMap, {
+      sourceEntryPath
+    });
   }
-
-  const oldFilePath = absoluteSourceFilePath, ///
-        newFilePath = absoluteTargetFilePath; ///
-
-  moveFile(oldFilePath, newFilePath, (error) => {
-    if (error) {
-      targetEntryPath = sourceEntryPath;  ///
-    }
-
-    callback(sourceEntryPath, targetEntryPath);
-  });
 }
 
-function moveDirectoryOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) {
-  const sourceDirectoryPath = sourceEntryPath,  ///
-        targetDirectoryPath = targetEntryPath,  ///
+export function moveProjectDirectory(projectsDirectoryPath, pathMap) {
+  const { sourceEntryPath, targetEntryPath } = pathMap,
+        sourceDirectoryPath = sourceEntryPath, ///
+        targetDirectoryPath = targetEntryPath, ///
         absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath),
-        sourceDirectoryEmpty = isDirectoryEmpty(absoluteSourceDirectoryPath);
+        absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath);
 
-  if (!sourceDirectoryEmpty) {
-    targetEntryPath = sourceEntryPath;  ///
+  try {
+    const oldDirectoryPath = absoluteSourceDirectoryPath, ///
+          newDirectoryPath = absoluteTargetDirectoryPath; ///
 
-    callback(sourceEntryPath, targetEntryPath);
+    moveDirectory(oldDirectoryPath, newDirectoryPath);
+  } catch (error) {
+    const sourceEntryPath = null;
 
-    return;
-  }
-
-  const absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath),
-        targetDirectoryExists = checkEntryExists(absoluteTargetDirectoryPath);
-
-  if (targetDirectoryExists) {
-    const directoryPath = absoluteSourceDirectoryPath;  ///
-
-    removeDirectory(directoryPath, (error) => {
-      if (error) {
-        targetEntryPath = sourceEntryPath;  ///
-      }
-
-      callback(sourceEntryPath, targetEntryPath);
+    Object.assign(pathMap, {
+      sourceEntryPath
     });
-
-    return;
   }
-
-  const oldDirectoryPath = absoluteSourceDirectoryPath, ///
-        newDirectoryPath = absoluteTargetDirectoryPath; ///
-
-  moveDirectory(oldDirectoryPath, newDirectoryPath, (error) => {
-    if (error) {
-      targetEntryPath = sourceEntryPath;  ///
-    }
-
-    callback(sourceEntryPath, targetEntryPath);
-  });
 }

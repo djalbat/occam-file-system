@@ -2,132 +2,69 @@
 
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
-import { asynchronousForEach } from "./utilities/pathMaps";
-
-const { concatenatePaths, pathWithoutBottommostNameFromPath } = pathUtilities,
-      { createFile: createFileEx,
-        createDirectory: createDirectoryEx,
-        checkEntryExists: checkFileExists,
-        checkEntryExists: checkDirectoryExists } = fileSystemUtilities;
+const { concatenatePaths } = pathUtilities,
+      { createFile: createFile, createDirectory: createDirectory } = fileSystemUtilities;
 
 export default function createProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
 
-  createEntries(pathMaps, projectsDirectoryPath, (targetEntryPaths) => {
-    const json = {
-      targetEntryPaths
-    };
-
-    callback(json);
+  pathMaps.forEach((pathMap) => {
+    createProjectEntry(pathMap);
   });
+
+  json = {
+    pathMaps
+  };
+
+  callback(json);
 }
 
-export function createEntryOperation(sourceEntryPath, targetEntryPath, entryDirectory, projectsDirectoryPath, callback) {
+export function createProjectEntry(projectsDirectoryPath, pathMap) {
+  const { sourcePath } = pathMap;
+
+  if (sourcePath === null) {
+    return;
+  }
+
+  const { entryDirectory } = pathMap;
+
   entryDirectory ?
-    createDirectoryOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) :
-      createFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback);
+    createProjectDirectory(projectsDirectoryPath, pathMap) :
+      createProjectFile(projectsDirectoryPath, pathMap);
 }
 
-export function createDirectory(directoryPath, callback) {
-  let error = null;
+export function createProjectFile(projectsDirectoryPath, pathMap) {
+  const { sourceEntryPath } = pathMap,
+        sourceFilePath = sourceEntryPath, ///
+        absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath);
 
-  const directoryPathWithoutBottommostName = pathWithoutBottommostNameFromPath(directoryPath),
-        parentDirectoryPath = directoryPathWithoutBottommostName,  ///
-        parentDirectoryExists = checkDirectoryExists(parentDirectoryPath);
+  try {
+    const filePath = absoluteSourceFilePath;  ///
 
-  if (!parentDirectoryExists) {
-    error = `The '${directoryPath}' directory's parent directory does not exist`;
-  } else {
-    try {
-      createDirectoryEx(directoryPath)
-    } catch (nativeError) {
-      error = nativeError;  ///
-    }
+    createFile(filePath);
+  } catch (error) {
+    const targetEntryPath = null;
+
+    Object.assign(pathMap, {
+      targetEntryPath
+    });
   }
-
-  callback(error);
 }
 
-export function createFile(filePath, callback) {
-  let error = null;
+export function createProjectDirectory(projectsDirectoryPath, pathMap) {
+  const { sourceEntryPath } = pathMap,
+        sourceDirectoryPath = sourceEntryPath, ///
+        absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath);
 
-  const filePathWithoutBottommostName = pathWithoutBottommostNameFromPath(filePath),
-        parentDirectoryPath = filePathWithoutBottommostName,  ///
-        parentDirectoryExists = checkDirectoryExists(parentDirectoryPath);
+  try {
+    const directoryPath = absoluteSourceDirectoryPath;  ///
 
-  if (!parentDirectoryExists) {
-    error = `The '${filePath}' file's parent directory does not exist`;
-  } else {
-    try {
-      createFileEx(filePath)
-    } catch (nativeError) {
-      error = nativeError;  ///
-    }
+    createDirectory(directoryPath);
+  } catch (error) {
+    const targetEntryPath = null;
+
+    Object.assign(pathMap, {
+      targetEntryPath
+    });
   }
-
-  callback(error);
-}
-
-function createEntries(pathMaps, projectsDirectoryPath, callback) {
-  const targetEntryPaths = [];
-
-  asynchronousForEach(
-    pathMaps,
-    (sourceEntryPath, targetEntryPath, entryDirectory, next, done, index) => {
-      createEntryOperation(sourceEntryPath, targetEntryPath, entryDirectory, projectsDirectoryPath, (sourceEntryPath, targetEntryPath) => {
-        targetEntryPaths.push(targetEntryPath);
-
-        next();
-      });
-    },
-    () => {
-      callback(targetEntryPaths);
-    }
-  );
-}
-
-function createFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) {
-  const targetFilePath = targetEntryPath, ///
-        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath),
-        targetFileExists = checkFileExists(absoluteTargetFilePath);
-
-  if (targetFileExists) {
-    targetEntryPath = null;
-
-    callback(sourceEntryPath, targetEntryPath);
-
-    return;
-  }
-
-  const filePath = absoluteTargetFilePath;  ///
-
-  createFile(filePath, (error) => {
-    if (error) {
-      targetEntryPath = null;
-    }
-
-    callback(sourceEntryPath, targetEntryPath);
-  });
-}
-
-function createDirectoryOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) {
-  const targetDirectoryPath = targetEntryPath,  ///
-        absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath),
-        targetDirectoryExists = checkFileExists(absoluteTargetDirectoryPath);
-
-  if (targetDirectoryExists) {
-    targetEntryPath = null;
-
-    callback(sourceEntryPath, targetEntryPath);
-
-    return;
-  }
-
-  createDirectory(absoluteTargetDirectoryPath, (error) => {
-    if (error) {
-      targetEntryPath = null;
-    }
-
-    callback(sourceEntryPath, targetEntryPath);
-  });
 }

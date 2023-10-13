@@ -2,158 +2,85 @@
 
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
-import { asynchronousForEach } from "./utilities/pathMaps";
-
+import { removeProjectEntry } from "./removeProjectEntries";
 
 const { concatenatePaths } = pathUtilities,
-      { isDirectoryEmpty,
-        checkEntryExists,
-        renameFile: renameFileEx,
-        renameDirectory: renameDirectoryEx } = fileSystemUtilities;
+      { renameFile: renameFile, renameDirectory: renameDirectory } = fileSystemUtilities;
 
 export default function renameProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
 
-  renameEntries(pathMaps, projectsDirectoryPath, (targetEntryPaths) => {
-    const json = {
-      targetEntryPaths
-    };
-
-    callback(json);
+  pathMaps.forEach((pathMap) => {
+    renameProjectEntry(pathMap);
   });
+
+  json = {
+    pathMaps
+  };
+
+  callback(json);
 }
 
-export function renameEntryOperation(sourceEntryPath, targetEntryPath, entryDirectory, projectsDirectoryPath, callback) {
+export function renameProjectEntry(projectsDirectoryPath, pathMap) {
+  const { sourcePath } = pathMap;
 
+  if (sourcePath === null) {
+    return;
+  }
 
+  const { targetPath } = pathMap;
 
-
-
-
-  const absoluteSourceEntryPath = concatenatePaths(projectsDirectoryPath, sourceEntryPath),
-        sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
-
-  if (!sourceEntryExists) {
-    targetEntryPath = null;
-
-    callback(sourceEntryPath, targetEntryPath);
+  if (targetPath === null) {
+    removeProjectEntry(projectsDirectoryPath, pathMap);
 
     return;
   }
+
+  const { entryDirectory } = pathMap;
 
   entryDirectory ?
-    renameDirectoryOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) :
-      renameFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback);
+    renameProjectDirectory(projectsDirectoryPath, pathMap) :
+      renameProjectFile(projectsDirectoryPath, pathMap);
 }
 
-export function renameDirectory(oldDirectoryPath, newDirectoryPath, callback) {
-  let error = null;
-
-  try {
-    renameDirectoryEx(oldDirectoryPath);
-  } catch (nativeError) {
-    error = nativeError;  ///
-  }
-
-  callback(error);
-}
-
-export function renameFile(oldFilePath, newFilePath, callback) {
-  let error = null;
-
-  try {
-    renameFileEx(oldFilePath, newFilePath);
-  } catch (nativeError) {
-    error = nativeError;  ///
-  }
-
-  callback(error);
-}
-
-function renameEntries(pathMaps, projectsDirectoryPath, callback) {
-  const targetEntryPaths = [];
-
-  asynchronousForEach(
-    pathMaps,
-    (sourceEntryPath, targetEntryPath, entryDirectory, next, done, index) => {
-      renameEntryOperation(sourceEntryPath, targetEntryPath, entryDirectory, projectsDirectoryPath, (sourceEntryPath, targetEntryPath) => {
-        targetEntryPaths.push(targetEntryPath);
-
-        next();
-      });
-    },
-    () => {
-      callback(targetEntryPaths);
-    }
-  );
-}
-
-function renameFileOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) {
-  const sourceFilePath = sourceEntryPath, ///
+export function renameProjectFile(projectsDirectoryPath, pathMap) {
+  const { sourceEntryPath, targetEntryPath } = pathMap,
+        sourceFilePath = sourceEntryPath, ///
         targetFilePath = targetEntryPath, ///
         absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath),
-        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath),
-        targetFileExists = checkEntryExists(absoluteTargetFilePath);
+        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath);
 
-  if (targetFileExists) {
-    targetEntryPath = sourceEntryPath;  ///
+  try {
+    const oldFilePath = absoluteSourceFilePath, ///
+          newFilePath = absoluteTargetFilePath; ///
 
-    callback(sourceEntryPath, targetEntryPath);
+    renameFile(oldFilePath, newFilePath);
+  } catch (error) {
+    const sourceEntryPath = null;
 
-    return;
+    Object.assign(pathMap, {
+      sourceEntryPath
+    });
   }
-
-  const oldFilePath = absoluteSourceFilePath, ///
-        newFilePath = absoluteTargetFilePath; ///
-
-  renameFile(oldFilePath, newFilePath, (error) => {
-    if (error) {
-      targetEntryPath = sourceEntryPath;  ///
-    }
-
-    callback(sourceEntryPath, targetEntryPath);
-  });
 }
 
-function renameDirectoryOperation(sourceEntryPath, targetEntryPath, projectsDirectoryPath, callback) {
-  const sourceDirectoryPath = sourceEntryPath,  ///
-        targetDirectoryPath = targetEntryPath,  ///
+export function renameProjectDirectory(projectsDirectoryPath, pathMap) {
+  const { sourceEntryPath, targetEntryPath } = pathMap,
+        sourceDirectoryPath = sourceEntryPath, ///
+        targetDirectoryPath = targetEntryPath, ///
         absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath),
-        sourceDirectoryEmpty = isDirectoryEmpty(absoluteSourceDirectoryPath);
+        absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath);
 
-  if (!sourceDirectoryEmpty) {
-    targetEntryPath = sourceEntryPath;  ///
+  try {
+    const oldDirectoryPath = absoluteSourceDirectoryPath, ///
+          newDirectoryPath = absoluteTargetDirectoryPath; ///
 
-    callback(sourceEntryPath, targetEntryPath);
+    renameDirectory(oldDirectoryPath, newDirectoryPath);
+  } catch (error) {
+    const sourceEntryPath = null;
 
-    return;
-  }
-
-  const absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath),
-        targetDirectoryExists = checkEntryExists(absoluteTargetDirectoryPath);
-
-  if (targetDirectoryExists) {
-    const directoryPath = absoluteSourceDirectoryPath;  ///
-
-    removeDirectory(directoryPath, (error) => {
-      if (error) {
-        targetEntryPath = sourceEntryPath;  ///
-      }
-
-      callback(sourceEntryPath, targetEntryPath);
+    Object.assign(pathMap, {
+      sourceEntryPath
     });
-
-    return;
   }
-
-  const oldDirectoryPath = absoluteSourceDirectoryPath, ///
-        newDirectoryPath = absoluteTargetDirectoryPath; ///
-
-  renameDirectory(oldDirectoryPath, newDirectoryPath, (error) => {
-    if (error) {
-      targetEntryPath = sourceEntryPath;  ///
-    }
-
-    callback(sourceEntryPath, targetEntryPath);
-  });
 }
