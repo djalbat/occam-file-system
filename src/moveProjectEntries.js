@@ -22,15 +22,15 @@ export default function moveProjectEntries(projectsDirectoryPath, json, callback
 }
 
 export function moveProjectEntry(projectsDirectoryPath, pathMap) {
-  const { sourcePath } = pathMap;
+  const { sourceEntryPath } = pathMap;
 
-  if (sourcePath === null) {
+  if (sourceEntryPath === null) {
     return;
   }
 
-  const { targetPath } = pathMap;
+  const { targetEntryPath } = pathMap;
 
-  if (targetPath === null) {
+  if (targetEntryPath === null) {
     removeProjectEntry(projectsDirectoryPath, pathMap);
 
     return;

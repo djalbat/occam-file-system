@@ -20,9 +20,9 @@ export default function removeProjectEntries(projectsDirectoryPath, json, callba
 }
 
 export function removeProjectEntry(projectsDirectoryPath, pathMap) {
-  const { sourcePath } = pathMap;
+  const { sourceEntryPath } = pathMap;
 
-  if (sourcePath === null) {
+  if (sourceEntryPath === null) {
     return;
   }
 

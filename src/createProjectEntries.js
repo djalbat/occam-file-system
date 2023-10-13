@@ -3,7 +3,7 @@
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
 const { concatenatePaths } = pathUtilities,
-      { createFile: createFile, createDirectory: createDirectory } = fileSystemUtilities;
+      { checkEntryExists, createFile: createFile, createDirectory: createDirectory } = fileSystemUtilities;
 
 export default function createProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -20,9 +20,23 @@ export default function createProjectEntries(projectsDirectoryPath, json, callba
 }
 
 export function createProjectEntry(projectsDirectoryPath, pathMap) {
-  const { sourcePath } = pathMap;
+  const { sourceEntryPath } = pathMap;
 
-  if (sourcePath === null) {
+  if (sourceEntryPath === null) {
+    return;
+  }
+
+  const { targetEntryPath } = pathMap,
+        absoluteTargetEntryPath = concatenatePaths(projectsDirectoryPath, targetEntryPath),
+        targetEntryExists = checkEntryExists(absoluteTargetEntryPath);
+
+  if (targetEntryExists) {
+    const targetEntryPath = null;
+
+    Object.assign(pathMap, {
+      targetEntryPath
+    });
+
     return;
   }
 
