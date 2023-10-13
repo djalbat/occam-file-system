@@ -1,51 +1,27 @@
 "use strict";
 
-import { pathUtilities, arrayUtilities, fileSystemUtilities } from "necessary";
+import { arrayUtilities } from "necessary";
 
-const { last } = arrayUtilities,
-      { concatenatePaths } = pathUtilities,
-      { checkEntryExists, removeEntry: removeEntryEx } = fileSystemUtilities;
+import { removeProjectEntry } from "./removeProjectEntries";
+
+const { last } = arrayUtilities;
 
 export default function removeRelease(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json,
-        lastPathMap = last(pathMaps),
-        pathMap = lastPathMap,  ///
-        { sourceEntryPath } = pathMap;
+        lastPathMap = last(pathMaps);
 
-  let error = null;
+  removeProjectEntry(projectsDirectoryPath, lastPathMap);
 
-  const sourceFilePath = sourceEntryPath, ///
-        absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath),
-        sourceFileExists = checkEntryExists(absoluteSourceFilePath);
+  const { sourceEntryPath } = lastPathMap;
 
-  if (!sourceFileExists) {
-    error = `The '${sourceEntryPath}' package does not exist.`;
-  } else {
-    const entryPath = absoluteSourceFilePath; ///
+  pathMaps.forEach((pathMap) => {
+    Object.assign(pathMap, {
+      sourceEntryPath
+    });
+  });
 
-    try {
-      removeEntryEx(entryPath);
-    } catch (nativeError) {
-      error = nativeError;  ///
-    }
-  }
-
-  const targetEntryPaths = pathMaps.map((pathMap) => {
-    let targetEntryPath;
-
-    if (error === null) {
-      targetEntryPath = null;
-    } else {
-      const { sourceEntryPath } = pathMap;
-
-      targetEntryPath = sourceEntryPath;  ///
-    }
-
-    return targetEntryPath;
-  })
-
-  json = {  ///
-    targetEntryPaths
+  json = {
+    pathMaps
   };
 
   callback(json);
