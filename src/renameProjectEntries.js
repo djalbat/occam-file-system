@@ -30,11 +30,9 @@ export function renameProjectEntry(projectsDirectoryPath, pathMap) {
         targetEntryExists = checkEntryExists(absoluteTargetEntryPath);
 
   if (targetEntryExists) {
-    const sourceEntryPath = null,
-          targetEntryPath = null;
+    const targetEntryPath = null;
 
     Object.assign(pathMap, {
-      sourceEntryPath,
       targetEntryPath
     });
 
