@@ -22,16 +22,31 @@ export default function moveProjectEntries(projectsDirectoryPath, json, callback
 }
 
 export function moveProjectEntry(projectsDirectoryPath, pathMap) {
-  const { sourceEntryPath } = pathMap;
-
-  if (sourceEntryPath === null) {
-    return;
-  }
-
   const { targetEntryPath } = pathMap;
 
   if (targetEntryPath === null) {
+    return;
+  }
+
+  const absoluteTargetEntryPath = concatenatePaths(projectsDirectoryPath, targetEntryPath),
+        targetEntryExists = checkEntryExists(absoluteTargetEntryPath);
+
+  if (targetEntryExists) {
     removeProjectEntry(projectsDirectoryPath, pathMap);
+
+    return;
+  }
+
+  const { sourceEntryPath } = pathMap,
+        absoluteSourceEntryPath = concatenatePaths(projectsDirectoryPath, sourceEntryPath),
+        sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
+
+  if (!sourceEntryExists) {
+    const targetEntryPath = null;
+
+    Object.assign(pathMap, {
+      targetEntryPath
+    });
 
     return;
   }
