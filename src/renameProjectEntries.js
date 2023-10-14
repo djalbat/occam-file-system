@@ -3,7 +3,7 @@
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
 const { concatenatePaths } = pathUtilities,
-      { checkEntryExists, renameFile: renameFile, renameDirectory: renameDirectory } = fileSystemUtilities;
+      { renameEntry, checkEntryExists } = fileSystemUtilities;
 
 export default function renameProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -70,10 +70,10 @@ function renameProjectFile(projectsDirectoryPath, pathMap) {
         absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath);
 
   try {
-    const oldFilePath = absoluteSourceFilePath, ///
-          newFilePath = absoluteTargetFilePath; ///
+    const oldEntryPath = absoluteSourceFilePath, ///
+          newEntryPath = absoluteTargetFilePath; ///
 
-    renameFile(oldFilePath, newFilePath);
+    renameEntry(oldEntryPath, newEntryPath);
   } catch (error) {
     const sourceEntryPath = null;
 
@@ -91,10 +91,10 @@ function renameProjectDirectory(projectsDirectoryPath, pathMap) {
         absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath);
 
   try {
-    const oldDirectoryPath = absoluteSourceDirectoryPath, ///
-          newDirectoryPath = absoluteTargetDirectoryPath; ///
+    const oldEntryPath = absoluteSourceDirectoryPath, ///
+          newEntryPath = absoluteTargetDirectoryPath; ///
 
-    renameDirectory(oldDirectoryPath, newDirectoryPath);
+    renameEntry(oldEntryPath, newEntryPath);
   } catch (error) {
     const sourceEntryPath = null;
 

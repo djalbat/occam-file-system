@@ -5,7 +5,7 @@ import { pathUtilities, fileSystemUtilities } from "necessary";
 import { removeProjectEntry } from "./removeProjectEntries";
 
 const { concatenatePaths } = pathUtilities,
-      { moveFile: moveFile, moveDirectory: moveDirectory } = fileSystemUtilities;
+      { moveEntry, checkEntryExists } = fileSystemUtilities;
 
 export default function moveProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -51,10 +51,10 @@ function moveProjectFile(projectsDirectoryPath, pathMap) {
         absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath);
 
   try {
-    const oldFilePath = absoluteSourceFilePath, ///
-          newFilePath = absoluteTargetFilePath; ///
+    const oldEntryPath = absoluteSourceFilePath, ///
+          newEntryPath = absoluteTargetFilePath; ///
 
-    moveFile(oldFilePath, newFilePath);
+    moveEntry(oldEntryPath, newEntryPath);
   } catch (error) {
     const sourceEntryPath = null;
 
@@ -72,10 +72,10 @@ function moveProjectDirectory(projectsDirectoryPath, pathMap) {
         absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath);
 
   try {
-    const oldDirectoryPath = absoluteSourceDirectoryPath, ///
-          newDirectoryPath = absoluteTargetDirectoryPath; ///
+    const oldEntryPath = absoluteSourceDirectoryPath, ///
+          newEntryPath = absoluteTargetDirectoryPath; ///
 
-    moveDirectory(oldDirectoryPath, newDirectoryPath);
+    moveEntry(oldEntryPath, newEntryPath);
   } catch (error) {
     const sourceEntryPath = null;
 

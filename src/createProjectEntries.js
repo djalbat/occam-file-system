@@ -3,7 +3,7 @@
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
 const { concatenatePaths } = pathUtilities,
-      { checkEntryExists, createFile: createFile, createDirectory: createDirectory } = fileSystemUtilities;
+      { createFile, createDirectory, checkEntryExists } = fileSystemUtilities;
 
 export default function createProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;

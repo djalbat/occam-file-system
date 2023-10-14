@@ -3,7 +3,7 @@
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
 const { concatenatePaths } = pathUtilities,
-      { removeEntry: removeFile, removeEntry: removeDirectory } = fileSystemUtilities;
+      { removeEntry, checkEntryExists } = fileSystemUtilities;
 
 export default function removeProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -39,9 +39,9 @@ function removeProjectFile(projectsDirectoryPath, pathMap) {
         absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath);
 
   try {
-    const filePath = absoluteSourceFilePath;  ///
+    const entryPath = absoluteSourceFilePath;  ///
 
-    removeFile(filePath);
+    removeEntry(entryPath);
   } catch (error) {
     const sourceEntryPath = null;
 
@@ -57,9 +57,9 @@ function removeProjectDirectory(projectsDirectoryPath, pathMap) {
         absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath);
 
   try {
-    const directoryPath = absoluteSourceDirectoryPath;  ///
+    const entryPath = absoluteSourceDirectoryPath;  ///
 
-    removeDirectory(directoryPath);
+    removeEntry(entryPath);
   } catch (error) {
     const sourceEntryPath = null;
 
