@@ -12,14 +12,6 @@ export default function removeRelease(projectsDirectoryPath, json, callback) {
 
   removeProjectEntry(projectsDirectoryPath, lastPathMap);
 
-  const { sourceEntryPath } = lastPathMap;
-
-  pathMaps.forEach((pathMap) => {
-    Object.assign(pathMap, {
-      sourceEntryPath
-    });
-  });
-
   json = {
     pathMaps
   };
