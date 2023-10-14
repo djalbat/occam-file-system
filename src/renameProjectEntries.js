@@ -2,8 +2,6 @@
 
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
-import { removeProjectEntry } from "./removeProjectEntries";
-
 const { concatenatePaths } = pathUtilities,
       { renameFile: renameFile, renameDirectory: renameDirectory } = fileSystemUtilities;
 
@@ -22,16 +20,24 @@ export default function renameProjectEntries(projectsDirectoryPath, json, callba
 }
 
 export function renameProjectEntry(projectsDirectoryPath, pathMap) {
-  const { sourceEntryPath } = pathMap;
-
-  if (sourceEntryPath === null) {
-    return;
-  }
-
   const { targetEntryPath } = pathMap;
 
   if (targetEntryPath === null) {
-    removeProjectEntry(projectsDirectoryPath, pathMap);
+    return;
+  }
+
+  const { sourceEntryPath } = pathMap,
+        absoluteSourceEntryPath = concatenatePaths(projectsDirectoryPath, sourceEntryPath),
+        sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
+
+  if (sourceEntryExists) {
+    const sourceEntryPath = null,
+          targetEntryPath = null;
+
+    Object.assign(pathMap, {
+      sourceEntryPath,
+      targetEntryPath
+    });
 
     return;
   }

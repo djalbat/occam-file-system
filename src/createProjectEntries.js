@@ -20,12 +20,6 @@ export default function createProjectEntries(projectsDirectoryPath, json, callba
 }
 
 export function createProjectEntry(projectsDirectoryPath, pathMap) {
-  const { sourceEntryPath } = pathMap;
-
-  if (sourceEntryPath === null) {
-    return;
-  }
-
   const { targetEntryPath } = pathMap,
         absoluteTargetEntryPath = concatenatePaths(projectsDirectoryPath, targetEntryPath),
         targetEntryExists = checkEntryExists(absoluteTargetEntryPath);
