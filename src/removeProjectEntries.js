@@ -26,6 +26,13 @@ export function removeProjectEntry(projectsDirectoryPath, pathMap) {
     return;
   }
 
+  const absoluteSourceEntryPath = concatenatePaths(projectsDirectoryPath, sourceEntryPath),
+        sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
+
+  if (!sourceEntryExists) {
+    return;
+  }
+
   const { entryDirectory } = pathMap;
 
   entryDirectory ?
