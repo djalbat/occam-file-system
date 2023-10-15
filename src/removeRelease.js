@@ -7,10 +7,25 @@ import { removeProjectEntry } from "./removeProjectEntries";
 const { last } = arrayUtilities;
 
 export default function removeRelease(projectsDirectoryPath, json, callback) {
-  const { pathMaps } = json,
-        lastPathMap = last(pathMaps);
+  let entryDirectory;
 
-  removeProjectEntry(projectsDirectoryPath, lastPathMap);
+  const { pathMaps } = json,
+        lastPathMap = last(pathMaps),
+        pathMap = lastPathMap;  ///
+
+  entryDirectory = false;
+
+  Object.assign(pathMap, {
+    entryDirectory
+  });
+
+  removeProjectEntry(projectsDirectoryPath, pathMap);
+
+  entryDirectory = true;
+
+  Object.assign(pathMap, {
+    entryDirectory
+  });
 
   json = {
     pathMaps
