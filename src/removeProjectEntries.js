@@ -1,9 +1,10 @@
 "use strict";
 
+import { nullifyEntryPaths } from "./utilities/pathMap";
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
 const { concatenatePaths } = pathUtilities,
-      { removeEntry, checkEntryExists } = fileSystemUtilities;
+      { removeEntry, checkEntryExists, isDirectoryEmpty } = fileSystemUtilities;
 
 export default function removeProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -50,28 +51,27 @@ function removeProjectFile(projectsDirectoryPath, pathMap) {
 
     removeEntry(entryPath);
   } catch (error) {
-    const sourceEntryPath = null;
-
-    Object.assign(pathMap, {
-      sourceEntryPath
-    });
+    nullifyEntryPaths(pathMap);
   }
 }
 
 function removeProjectDirectory(projectsDirectoryPath, pathMap) {
   const { sourceEntryPath } = pathMap,
         sourceDirectoryPath = sourceEntryPath, ///
-        absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath);
+        absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath),
+        directoryEmpty = isDirectoryEmpty(absoluteSourceDirectoryPath);
+
+  if (!directoryEmpty) {
+    nullifyEntryPaths(pathMap);
+
+    return;
+  }
 
   try {
     const entryPath = absoluteSourceDirectoryPath;  ///
 
     removeEntry(entryPath);
   } catch (error) {
-    const sourceEntryPath = null;
-
-    Object.assign(pathMap, {
-      sourceEntryPath
-    });
+    nullifyEntryPaths(pathMap);
   }
 }

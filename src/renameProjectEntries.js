@@ -2,6 +2,7 @@
 
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
+import { nullifyEntryPaths } from "./utilities/pathMap";
 import { removeProjectEntry } from "./removeProjectEntries";
 
 const { concatenatePaths } = pathUtilities,
@@ -71,11 +72,7 @@ function renameProjectFile(projectsDirectoryPath, pathMap) {
 
     moveEntry(oldEntryPath, newEntryPath);  ///
   } catch (error) {
-    const sourceEntryPath = null;
-
-    Object.assign(pathMap, {
-      sourceEntryPath
-    });
+    nullifyEntryPaths(pathMap);
   }
 }
 
@@ -92,10 +89,6 @@ function renameProjectDirectory(projectsDirectoryPath, pathMap) {
 
     moveEntry(oldEntryPath, newEntryPath);  ///
   } catch (error) {
-    const sourceEntryPath = null;
-
-    Object.assign(pathMap, {
-      sourceEntryPath
-    });
+    nullifyEntryPaths(pathMap);
   }
 }

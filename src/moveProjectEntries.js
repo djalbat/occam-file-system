@@ -5,7 +5,7 @@ import { pathUtilities, fileSystemUtilities } from "necessary";
 import { removeProjectEntry } from "./removeProjectEntries";
 
 const { concatenatePaths } = pathUtilities,
-      { moveEntry, checkEntryExists } = fileSystemUtilities;
+      { moveEntry, checkEntryExists, isDirectoryEmpty } = fileSystemUtilities;
 
 export default function moveProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -71,11 +71,7 @@ function moveProjectFile(projectsDirectoryPath, pathMap) {
 
     moveEntry(oldEntryPath, newEntryPath);
   } catch (error) {
-    const sourceEntryPath = null;
-
-    Object.assign(pathMap, {
-      sourceEntryPath
-    });
+    nullifyEntryPaths(pathMap);
   }
 }
 
@@ -84,7 +80,14 @@ function moveProjectDirectory(projectsDirectoryPath, pathMap) {
         sourceDirectoryPath = sourceEntryPath, ///
         targetDirectoryPath = targetEntryPath, ///
         absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath),
-        absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath);
+        absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath),
+        directoryEmpty = isDirectoryEmpty(absoluteSourceDirectoryPath);
+
+  if (!directoryEmpty) {
+    nullifyEntryPaths(pathMap);
+
+    return;
+  }
 
   try {
     const oldEntryPath = absoluteSourceDirectoryPath, ///
@@ -92,10 +95,6 @@ function moveProjectDirectory(projectsDirectoryPath, pathMap) {
 
     moveEntry(oldEntryPath, newEntryPath);
   } catch (error) {
-    const sourceEntryPath = null;
-
-    Object.assign(pathMap, {
-      sourceEntryPath
-    });
+    nullifyEntryPaths(pathMap);
   }
 }
