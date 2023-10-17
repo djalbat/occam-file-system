@@ -1,7 +1,7 @@
 "use strict";
 
-import { nullifyEntryPaths } from "./utilities/pathMap";
 import { pathUtilities, fileSystemUtilities } from "necessary";
+import { nullifyEntryPaths, nullifyTargetEntryPath } from "./utilities/pathMap";
 
 const { concatenatePaths } = pathUtilities,
       { removeEntry, checkEntryExists, isDirectoryEmpty } = fileSystemUtilities;
@@ -31,6 +31,8 @@ export function removeProjectEntry(projectsDirectoryPath, pathMap) {
         sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
 
   if (!sourceEntryExists) {
+    nullifyTargetEntryPath(pathMap);
+
     return;
   }
 

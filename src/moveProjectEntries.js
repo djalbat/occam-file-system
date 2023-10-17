@@ -3,6 +3,7 @@
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
 import { removeProjectEntry } from "./removeProjectEntries";
+import { nullifyEntryPaths, nullifyTargetEntryPath } from "./utilities/pathMap";
 
 const { concatenatePaths } = pathUtilities,
       { moveEntry, checkEntryExists, isDirectoryEmpty } = fileSystemUtilities;
@@ -42,11 +43,7 @@ export function moveProjectEntry(projectsDirectoryPath, pathMap) {
         sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
 
   if (!sourceEntryExists) {
-    const targetEntryPath = null;
-
-    Object.assign(pathMap, {
-      targetEntryPath
-    });
+    nullifyTargetEntryPath(pathMap);
 
     return;
   }

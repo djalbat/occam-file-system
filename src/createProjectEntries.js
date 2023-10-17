@@ -1,5 +1,6 @@
 "use strict";
 
+import { nullifyTargetEntryPath } from "./utilities/pathMap";
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
 const { concatenatePaths } = pathUtilities,
@@ -25,11 +26,7 @@ export function createProjectEntry(projectsDirectoryPath, pathMap) {
         targetEntryExists = checkEntryExists(absoluteTargetEntryPath);
 
   if (targetEntryExists) {
-    const targetEntryPath = null;
-
-    Object.assign(pathMap, {
-      targetEntryPath
-    });
+    nullifyTargetEntryPath(pathMap);
 
     return;
   }
@@ -51,11 +48,7 @@ function createProjectFile(projectsDirectoryPath, pathMap) {
 
     createFile(filePath);
   } catch (error) {
-    const targetEntryPath = null;
-
-    Object.assign(pathMap, {
-      targetEntryPath
-    });
+    nullifyTargetEntryPath(pathMap);
   }
 }
 
@@ -69,10 +62,6 @@ function createProjectDirectory(projectsDirectoryPath, pathMap) {
 
     createDirectory(directoryPath);
   } catch (error) {
-    const targetEntryPath = null;
-
-    Object.assign(pathMap, {
-      targetEntryPath
-    });
+    nullifyTargetEntryPath(pathMap);
   }
 }

@@ -9,3 +9,19 @@ export function nullifyEntryPaths(pathMap) {
     targetEntryPath
   });
 }
+
+export function nullifySourcePath(pathMap) {
+  const sourceEntryPath = null;
+
+  Object.assign(pathMap, {
+    sourceEntryPath
+  });
+}
+
+export function nullifyTargetEntryPath(pathMap) {
+  const targetEntryPath = null;
+
+  Object.assign(pathMap, {
+    targetEntryPath
+  });
+}

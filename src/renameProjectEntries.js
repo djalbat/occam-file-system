@@ -2,8 +2,8 @@
 
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
-import { nullifyEntryPaths } from "./utilities/pathMap";
 import { removeProjectEntry } from "./removeProjectEntries";
+import { nullifyEntryPaths, nullifyTargetEntryPath } from "./utilities/pathMap";
 
 const { concatenatePaths } = pathUtilities,
       { moveEntry, checkEntryExists } = fileSystemUtilities;
@@ -43,11 +43,7 @@ export function renameProjectEntry(projectsDirectoryPath, pathMap) {
         sourceEntryExists = checkEntryExists(absoluteSourceEntryPath);
 
   if (!sourceEntryExists) {
-    const targetEntryPath = null;
-
-    Object.assign(pathMap, {
-      targetEntryPath
-    });
+    nullifyTargetEntryPath(pathMap);
 
     return;
   }
