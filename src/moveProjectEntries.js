@@ -2,10 +2,11 @@
 
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
+import { removeProjectEntry } from "./removeProjectEntries";
 import { nullifyEntryPaths, nullifyTargetEntryPath } from "./utilities/pathMap";
 
 const { concatenatePaths } = pathUtilities,
-      { moveEntry, checkEntryExists, isDirectoryEmpty } = fileSystemUtilities;
+      { moveEntry, isDirectoryEmpty, checkEntryExists, checkEntryExists: checkFileExists, checkEntryExists: checkDirectoryExists } = fileSystemUtilities;
 
 export default function moveProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -25,15 +26,6 @@ export function moveProjectEntry(projectsDirectoryPath, pathMap) {
   const { targetEntryPath } = pathMap;
 
   if (targetEntryPath === null) {
-    return;
-  }
-
-  const absoluteTargetEntryPath = concatenatePaths(projectsDirectoryPath, targetEntryPath),
-        targetEntryExists = checkEntryExists(absoluteTargetEntryPath);
-
-  if (targetEntryExists) {
-    nullifyEntryPaths(pathMap);
-
     return;
   }
 
@@ -59,7 +51,14 @@ function moveProjectFile(projectsDirectoryPath, pathMap) {
         sourceFilePath = sourceEntryPath, ///
         targetFilePath = targetEntryPath, ///
         absoluteSourceFilePath = concatenatePaths(projectsDirectoryPath, sourceFilePath),
-        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath);
+        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath),
+        targetFileExists = checkFileExists(absoluteTargetFilePath);
+
+  if (targetFileExists) {
+    nullifyEntryPaths(pathMap);
+
+    return;
+  }
 
   try {
     const oldEntryPath = absoluteSourceFilePath, ///
@@ -77,10 +76,17 @@ function moveProjectDirectory(projectsDirectoryPath, pathMap) {
         targetDirectoryPath = targetEntryPath, ///
         absoluteSourceDirectoryPath = concatenatePaths(projectsDirectoryPath, sourceDirectoryPath),
         absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath),
+        targetDirectoryExists = checkDirectoryExists(absoluteTargetDirectoryPath),
         directoryEmpty = isDirectoryEmpty(absoluteSourceDirectoryPath);
 
   if (!directoryEmpty) {
     nullifyEntryPaths(pathMap);
+
+    return;
+  }
+
+  if (targetDirectoryExists) {
+    removeProjectEntry(projectsDirectoryPath, pathMap);
 
     return;
   }

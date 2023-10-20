@@ -4,7 +4,7 @@ import { nullifyTargetEntryPath } from "./utilities/pathMap";
 import { pathUtilities, fileSystemUtilities } from "necessary";
 
 const { concatenatePaths } = pathUtilities,
-      { createFile, createDirectory, checkEntryExists } = fileSystemUtilities;
+      { createFile, createDirectory, checkEntryExists: checkFileExists, checkEntryExists: checkDirectoryExists } = fileSystemUtilities;
 
 export default function createProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -21,16 +21,6 @@ export default function createProjectEntries(projectsDirectoryPath, json, callba
 }
 
 export function createProjectEntry(projectsDirectoryPath, pathMap) {
-  const { targetEntryPath } = pathMap,
-        absoluteTargetEntryPath = concatenatePaths(projectsDirectoryPath, targetEntryPath),
-        targetEntryExists = checkEntryExists(absoluteTargetEntryPath);
-
-  if (targetEntryExists) {
-    nullifyTargetEntryPath(pathMap);
-
-    return;
-  }
-
   const { entryDirectory } = pathMap;
 
   entryDirectory ?
@@ -41,7 +31,14 @@ export function createProjectEntry(projectsDirectoryPath, pathMap) {
 function createProjectFile(projectsDirectoryPath, pathMap) {
   const { targetEntryPath } = pathMap,
         targetFilePath = targetEntryPath, ///
-        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath);
+        absoluteTargetFilePath = concatenatePaths(projectsDirectoryPath, targetFilePath),
+        targetFileExists = checkFileExists(absoluteTargetFilePath);
+
+  if (targetFileExists) {
+    nullifyTargetEntryPath(pathMap);
+
+    return;
+  }
 
   try {
     const filePath = absoluteTargetFilePath;  ///
@@ -55,7 +52,14 @@ function createProjectFile(projectsDirectoryPath, pathMap) {
 function createProjectDirectory(projectsDirectoryPath, pathMap) {
   const { targetEntryPath } = pathMap,
         targetDirectoryPath = targetEntryPath, ///
-        absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath);
+        absoluteTargetDirectoryPath = concatenatePaths(projectsDirectoryPath, targetDirectoryPath),
+        targetDirectoryExists = checkDirectoryExists(absoluteTargetDirectoryPath);
+
+  if (targetDirectoryExists) {
+    nullifyTargetEntryPath(pathMap);
+
+    return;
+  }
 
   try {
     const directoryPath = absoluteTargetDirectoryPath;  ///
