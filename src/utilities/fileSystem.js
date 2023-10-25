@@ -13,6 +13,7 @@ const { first } = arrayUtilities,
         isEntryFile,
         readDirectory,
         isEntryDirectory,
+        checkEntryExists,
         checkEntryExists: checkFileExists } = fileSystemUtilities;
 
 export function loadFile(path, projectsDirectoryPath) {
@@ -74,11 +75,15 @@ export function loadFiles(paths, projectsDirectoryPath) {
 
       if (topmostDirectoryName !== null) {
         const absolutePath = concatenatePaths(projectsDirectoryPath, topmostDirectoryName),
-              entryDirectory = isEntryDirectory(absolutePath);
+              entryExists = checkEntryExists(absolutePath);
 
-        files = entryDirectory ?
-                  filesFromProject(paths, projectsDirectoryPath) :
-                    filesFromRelease(paths, projectsDirectoryPath);
+        if (entryExists) {
+          const entryDirectory = isEntryDirectory(absolutePath);
+
+          files = entryDirectory ?
+                    filesFromProject(paths, projectsDirectoryPath) :
+                      filesFromRelease(paths, projectsDirectoryPath);
+        }
       }
     }
   } catch (error) {
