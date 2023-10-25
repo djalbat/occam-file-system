@@ -60,9 +60,11 @@ export function saveFile(file, projectsDirectoryPath) {
 }
 
 export function loadFiles(paths, projectsDirectoryPath) {
-  let files = null;
+  let files;
 
   try {
+    files = Files.fromNothing();
+
     const pathsLength = paths.length;
 
     if (pathsLength > 0) {
@@ -80,7 +82,7 @@ export function loadFiles(paths, projectsDirectoryPath) {
       }
     }
   } catch (error) {
-    ///
+    files = null;
   }
 
   return files;
