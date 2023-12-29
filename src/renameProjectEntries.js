@@ -5,7 +5,7 @@ import { pathUtilities, fileSystemUtilities } from "necessary";
 import { nullifyEntryPaths, nullifyTargetEntryPath } from "./utilities/pathMap";
 
 const { concatenatePaths } = pathUtilities,
-      { moveEntry, checkEntryExists, checkEntryExists: checkFileExists, checkEntryExists: checkDirectoryExists } = fileSystemUtilities;
+      { renameEntry, checkEntryExists, checkEntryExists: checkFileExists, checkEntryExists: checkDirectoryExists } = fileSystemUtilities;
 
 export default function renameProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json;
@@ -63,7 +63,7 @@ function renameProjectFile(projectsDirectoryPath, pathMap) {
     const oldEntryPath = absoluteSourceFilePath, ///
           newEntryPath = absoluteTargetFilePath; ///
 
-    moveEntry(oldEntryPath, newEntryPath);  ///
+    renameEntry(oldEntryPath, newEntryPath);  ///
   } catch (error) {
     nullifyEntryPaths(pathMap);
   }
@@ -87,7 +87,7 @@ function renameProjectDirectory(projectsDirectoryPath, pathMap) {
     const oldEntryPath = absoluteSourceDirectoryPath, ///
           newEntryPath = absoluteTargetDirectoryPath; ///
 
-    moveEntry(oldEntryPath, newEntryPath);  ///
+    renameEntry(oldEntryPath, newEntryPath);  ///
   } catch (error) {
     nullifyEntryPaths(pathMap);
   }
