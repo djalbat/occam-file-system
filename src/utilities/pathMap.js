@@ -10,7 +10,7 @@ export function nullifyEntryPaths(pathMap) {
   });
 }
 
-export function nullifySourcePath(pathMap) {
+export function nullifySourceEntryPath(pathMap) {
   const sourceEntryPath = null;
 
   Object.assign(pathMap, {
@@ -23,5 +23,17 @@ export function nullifyTargetEntryPath(pathMap) {
 
   Object.assign(pathMap, {
     targetEntryPath
+  });
+}
+
+export function nullifySourceEntryPaths(pathMaps) {
+  pathMaps.forEach((pathMap) => {
+    nullifySourceEntryPath(pathMap);
+  });
+}
+
+export function nullifyTargetEntryPaths(pathMaps) {
+  pathMaps.forEach((pathMap) => {
+    nullifyTargetEntryPath(pathMap);
   });
 }
