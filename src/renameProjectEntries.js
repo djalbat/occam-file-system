@@ -4,14 +4,14 @@ import { pathUtilities, arrayUtilities, fileSystemUtilities } from "necessary";
 
 import { nullifyEntryPaths, nullifyTargetEntryPath, nullifyTargetEntryPaths } from "./utilities/pathMap";
 
-const { first } = arrayUtilities,
+const { last } = arrayUtilities,
       { concatenatePaths } = pathUtilities,
       { renameEntry, checkEntryExists, checkEntryExists: checkFileExists, checkEntryExists: checkDirectoryExists } = fileSystemUtilities;
 
 export default function renameProjectEntries(projectsDirectoryPath, json, callback) {
   const { pathMaps } = json,
-        firstPathMap = first(pathMaps),
-        pathMap = firstPathMap; ///
+        lastPathMap = last(pathMaps),
+        pathMap = lastPathMap; ///
 
   renameProjectEntry(projectsDirectoryPath, pathMap);
 
