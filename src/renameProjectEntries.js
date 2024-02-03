@@ -2,7 +2,7 @@
 
 import { pathUtilities, arrayUtilities, fileSystemUtilities } from "necessary";
 
-import { nullifyEntryPaths, nullifyTargetEntryPath } from "./utilities/pathMap";
+import { nullifyEntryPaths, nullifyTargetEntryPath, nullifyTargetEntryPaths } from "./utilities/pathMap";
 
 const { first } = arrayUtilities,
       { concatenatePaths } = pathUtilities,
