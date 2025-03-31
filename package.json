@@ -1,7 +1,7 @@
 {
   "name": "occam-file-system",
   "author": "James Smith",
-  "version": "6.0.353",
+  "version": "6.0.354",
   "license": "MIT, Anti-996",
   "homepage": "https://github.com/djalbat/occam-file-system",
   "description": "Occam's file system functionality.",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "necessary": "^14.3.2",
-    "occam-entities": "^1.0.335"
+    "occam-entities": "^1.0.336"
   },
   "devDependencies": {
     "@swc/core": "^1.5.6",
