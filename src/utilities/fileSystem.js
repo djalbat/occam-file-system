@@ -1,7 +1,7 @@
 "use strict";
 
 import { arrayUtilities, pathUtilities, fileSystemUtilities } from "necessary";
-import { File, Files, Entries, Project, Release, Projects, Releases, Directory, filePathUtilities } from "occam-entities";
+import { File, Files, Entries, Project, Release, Projects, Releases, Directory, filePathUtilities } from "occam-model";
 
 import { isNameHiddenName } from "../utilities/name";
 
