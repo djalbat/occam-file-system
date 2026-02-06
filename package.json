@@ -1,13 +1,13 @@
 {
-  "name": "occam-server",
+  "name": "occam-file-system",
   "author": "James Smith",
   "version": "6.0.498",
   "license": "MIT, Anti-996",
-  "homepage": "https://github.com/djalbat/occam-server",
-  "description": "The Occam IDE's server functionality.",
+  "homepage": "https://github.com/djalbat/occam-file-system",
+  "description": "Occam's file system functionality.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/djalbat/occam-server"
+    "url": "https://github.com/djalbat/occam-file-system"
   },
   "dependencies": {
     "necessary": "^17.0.9",
