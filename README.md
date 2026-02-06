@@ -1,4 +1,4 @@
-# Occam Server
+# Occam File System (soon to be Occam Server)
 
 The [Occam](https://github.com/djalbat/occam) IDE's server functionality.
 
