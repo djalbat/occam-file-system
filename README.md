@@ -18,11 +18,11 @@ The Occam IDE's server functionality.
 
 With [npm](https://www.npmjs.com/):
 
-    npm install occam-server
+    npm install occam-file-system
 
 You can also clone the repository with [Git](https://git-scm.com/)...
 
-    git clone https://github.com/djalbat/occam-server.git
+    git clone https://github.com/djalbat/occam-file-system.git
 
 ...and then install the dependencies with npm from within the project's root directory:
 
@@ -51,7 +51,7 @@ Typical usage is as follows:
 
 ```
 const open = require('occam-open-cli'), ///
-      filesystem = require('occam-server'); ///
+      filesystem = require('occam-file-system'); ///
 
 const { Files } = open,
       { loadFiles } = filesystem;
